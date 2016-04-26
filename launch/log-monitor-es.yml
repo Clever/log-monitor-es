@@ -1,0 +1,9 @@
+run:
+  type: docker
+env: []
+resources:
+  cpu: 0.05
+  max_mem: 0.05
+shepherds:
+  - ryan.burns@clever.com
+  - xavi.ramirez@clever.com
