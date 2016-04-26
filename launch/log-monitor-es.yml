@@ -1,6 +1,9 @@
 run:
   type: docker
-env: []
+env:
+- ELASTICSEARCH_ENDPOINT
+- SIGNALFX_API_KEY
+- MONITOR_NAME
 resources:
   cpu: 0.05
   max_mem: 0.05
