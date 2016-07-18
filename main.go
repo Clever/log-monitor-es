@@ -69,9 +69,9 @@ func init() {
 	kvlog = kv.New("log-monitor-es")
 }
 
-func getLatestTimestamp() (time.Time, error) {
+func getLatestTimestamp(esClient *http.Client) (time.Time, error) {
 	reader := strings.NewReader(esQuery)
-	res, err := http.Post(esEndpoint, "application/json", reader)
+	res, err := esClient.Post(esEndpoint, "application/json", reader)
 	if err != nil {
 		return time.Time{}, err
 	}
@@ -118,9 +118,13 @@ func sendToSignalFX(timestamp time.Time) error {
 }
 
 func main() {
+	esClient := &http.Client{
+		Timeout: 15 * time.Second,
+	}
+
 	tick := time.Tick(15 * time.Second)
 	for {
-		timestamp, err := getLatestTimestamp()
+		timestamp, err := getLatestTimestamp(esClient)
 		if err != nil {
 			kvlog.ErrorD("timestamp", kv.M{"error": err.Error()})
 			continue
