@@ -14,7 +14,7 @@ vendor: golang-godep-vendor-deps
 	$(call golang-godep-vendor,$(PKGS))
 
 build:
-	@GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -a -installsuffix cgo
+	@CGO_ENABLED=0 go build -a -installsuffix cgo
 
 run: build
 	./log-monitor-es
