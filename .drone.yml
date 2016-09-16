@@ -1,12 +1,10 @@
-env:
-- REPORT_CARD_GITHUB_STATUS_TOKEN=$$report_card_github_status_token
-- REPORT_CARD_GITHUB_REPO_TOKEN=$$report_card_github_repo_token
 image: clever/drone-go:1.6
 notify:
   email:
     recipients:
     - drone@clever.com
 publish:
+  report_card: {}
   catapult:
     url: $$catapult_url
     application: "log-monitor-es"
@@ -22,5 +20,4 @@ publish:
     when:
       branch: master
 script:
-- pip install -q git+git://github.com/Clever/report-card.git && GITHUB_API_TOKEN=$REPORT_CARD_GITHUB_API_TOKEN report-card --publish
 - make build
