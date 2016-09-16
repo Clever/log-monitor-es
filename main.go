@@ -1,53 +1,23 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/signalfx/golib/datapoint"
 	"github.com/signalfx/golib/sfxclient"
 	"golang.org/x/net/context"
 	kv "gopkg.in/Clever/kayvee-go.v3/logger"
+	"gopkg.in/olivere/elastic.v3"
 )
-
-// Why the strange indending?  Why not use ` around the whole multi-line query?
-// ES is very particular about newlines and whitespace in general.
-// The only unquoted whitespace allowed are newlines after json objects.
-const esQuery = `{"ignore_unavailable":true}` + "\n" +
-	`{"size":1,` +
-	/**/ `"sort":{"Timestamp":"desc"},` +
-	/**/ `"query":` +
-	/**/ `{"filtered":` +
-	/******/ `{"query":` +
-	/*********/ `{"query_string":{"query":"*","analyze_wildcard":true}}` +
-	/******/ "}}}\n"
-
-const tsFormat = "2006-01-02T15:04:05"
-
-type queryResults struct {
-	Error     string `json:"error"`
-	Responses []struct {
-		Hits struct {
-			Hits []resultHit `json:"hits"`
-		} `json:"hits"`
-	} `json:"responses"`
-}
-
-type resultHit struct {
-	Source map[string]interface{} `json:"_source"`
-	Sort   []int                  `json:"sort"`
-}
 
 var kvlog *kv.Logger
 var sfxSink *sfxclient.HTTPDatapointSink
 
 // Config vars
-var esEndpoint, signalfxAPIKey, monitorName string
+var componentName, elasticsearchIndex, elasticsearchURI, environment, signalfxAPIKey, metricName string
 
 // getEnv looks up an environment variable given and exits if it does not exist.
 func getEnv(envVar string) string {
@@ -59,9 +29,12 @@ func getEnv(envVar string) string {
 }
 
 func init() {
-	esEndpoint = getEnv("ELASTICSEARCH_ENDPOINT")
+	elasticsearchURI = getEnv("ELASTICSEARCH_URI")
+	elasticsearchIndex = getEnv("ELASTICSEARCH_INDEX")
 	signalfxAPIKey = getEnv("SIGNALFX_API_KEY")
-	monitorName = getEnv("MONITOR_NAME")
+	metricName = getEnv("METRIC_NAME")
+	componentName = getEnv("COMPONENT_NAME")
+	environment = getEnv("DEPLOY_ENV")
 
 	sfxSink = sfxclient.NewHTTPDatapointSink()
 	sfxSink.AuthToken = signalfxAPIKey
@@ -69,72 +42,87 @@ func init() {
 	kvlog = kv.New("log-monitor-es")
 }
 
-func getLatestTimestamp(esClient *http.Client) (time.Time, error) {
-	reader := strings.NewReader(esQuery)
-	res, err := esClient.Post(esEndpoint, "application/json", reader)
+func getLatestTimestamps(esClient *elastic.Client) (map[string]time.Time, error) {
+	hostname := elastic.NewTermsAggregation().Field("Hostname").Size(200)
+	timestamp := elastic.NewMaxAggregation().Field("Timestamp")
+	hostname = hostname.SubAggregation("latestTimes", timestamp)
+
+	searchResult, err := esClient.Search().
+		Index(elasticsearchIndex).
+		Query(elastic.NewTermQuery("Title", "heartbeat")).
+		SearchType("count").
+		Aggregation("hosts", hostname).
+		Pretty(true).
+		Timeout("15s").
+		Do()
+
 	if err != nil {
-		return time.Time{}, err
+		return nil, fmt.Errorf("Error while searching: %s", err)
 	}
 
-	var result queryResults
-	decoder := json.NewDecoder(res.Body)
-	if err := decoder.Decode(&result); err != nil {
-		return time.Time{}, err
+	agg, found := searchResult.Aggregations.Terms("hosts")
+	if !found {
+		return nil, fmt.Errorf("No results found: %s", err)
 	}
 
-	if res.StatusCode != 200 {
-		return time.Time{}, fmt.Errorf("Error retrieving latest log: %s", result.Error)
-	}
+	results := map[string]time.Time{}
+	for _, hostBucket := range agg.Buckets {
+		// Every bucket should have the hostname field as key.
+		host := hostBucket.Key.(string)
 
-	if len(result.Responses) < 1 {
-		return time.Time{}, fmt.Errorf("Error: no response from elastic search")
+		// The sub-aggregation latestTimes
+		maxTime, found := hostBucket.Max("latestTimes")
+		if found {
+			results[host] = time.Unix(int64(*maxTime.Value), 0)
+		}
 	}
-
-	if len(result.Responses[0].Hits.Hits) < 1 {
-		return time.Time{}, fmt.Errorf("Error: no results from elastic search")
-	}
-
-	source := result.Responses[0].Hits.Hits[0].Source
-	timestamp, ok := source["Timestamp"]
-	if !ok {
-		return time.Time{}, fmt.Errorf("Error: no timestamp found on log line")
-	}
-
-	switch timestamp := timestamp.(type) {
-	case string:
-		return time.Parse(tsFormat, timestamp)
-	default:
-		return time.Time{}, fmt.Errorf("Error: timestamp incorrect type: %+#v", timestamp)
-	}
+	return results, nil
 }
 
-func sendToSignalFX(timestamp time.Time) error {
-	dimensions := map[string]string{"hostname": monitorName}
+func sendToSignalFX(timestamps map[string]time.Time) error {
+	points := []*datapoint.Datapoint{}
+	for host, timestamp := range timestamps {
+		dimensions := map[string]string{
+			"hostname":    host,
+			"component":   componentName,
+			"environment": environment,
+		}
 
-	datum := sfxclient.Gauge("log-monitor", dimensions, timestamp.Unix())
-	points := []*datapoint.Datapoint{datum}
+		datum := sfxclient.Gauge(metricName, dimensions, timestamp.Unix())
+		points = append(points, datum)
+	}
 
 	return sfxSink.AddDatapoints(context.TODO(), points)
 }
 
 func main() {
-	esClient := &http.Client{
-		Timeout: 15 * time.Second,
+	// For AWS logs-* clusters, access is controlled by IP address so no signing is needed,
+	// but since AWS blocks some APIs, sniffing and healthchecks are disabled.
+	esClient, err := elastic.NewClient(
+		elastic.SetURL(elasticsearchURI),
+		elastic.SetScheme("https"),
+		elastic.SetSniff(false),
+		elastic.SetHealthcheck(false),
+	)
+
+	if err != nil {
+		log.Fatalf("Failed to create ES client: %s\n", err)
 	}
 
 	tick := time.Tick(15 * time.Second)
 	for {
-		timestamp, err := getLatestTimestamp(esClient)
+		timestamps, err := getLatestTimestamps(esClient)
 		if err != nil {
 			kvlog.ErrorD("timestamp", kv.M{"error": err.Error()})
 			continue
 		}
+
+		// Log the number of hosts reported
 		kvlog.InfoD("timestamp", kv.M{
-			"timestamp": timestamp.Format(time.RFC3339),
-			"delta-ms":  time.Now().Sub(timestamp) / time.Millisecond,
+			"count": len(timestamps),
 		})
 
-		err = sendToSignalFX(timestamp)
+		err = sendToSignalFX(timestamps)
 		if err != nil {
 			kvlog.ErrorD("send-to-signalfx", kv.M{"error": err.Error()})
 			continue
