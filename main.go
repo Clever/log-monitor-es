@@ -73,7 +73,10 @@ func getLatestTimestamps(esClient *elastic.Client) (map[string]time.Time, error)
 		// The sub-aggregation latestTimes
 		maxTime, found := hostBucket.Max("latestTimes")
 		if found {
-			results[host] = time.Unix(int64(*maxTime.Value), 0)
+			// Convert from milliseconds (as returned by Elasticsearch) to
+			// seconds (as needed by time.Unix()). Sub-second resolution
+			// does not matter for this monitor.
+			results[host] = time.Unix(int64(*maxTime.Value)/1000, 0)
 		}
 	}
 	return results, nil
