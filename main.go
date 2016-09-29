@@ -47,9 +47,13 @@ func getLatestTimestamps(esClient *elastic.Client) (map[string]time.Time, error)
 	timestamp := elastic.NewMaxAggregation().Field("Timestamp")
 	hostname = hostname.SubAggregation("latestTimes", timestamp)
 
+	q := elastic.NewBoolQuery()
+	q = q.Must(elastic.NewTermQuery("Title", "heartbeat"))
+	q = q.Must(elastic.NewRangeQuery("Timestamp").Gte("now-5m/m").Lte("now/m"))
+
 	searchResult, err := esClient.Search().
 		Index(elasticsearchIndex).
-		Query(elastic.NewTermQuery("Title", "heartbeat")).
+		Query(q).
 		SearchType("count").
 		Aggregation("hosts", hostname).
 		Pretty(true).
