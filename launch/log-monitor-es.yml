@@ -9,7 +9,7 @@ env:
 - COMPONENT_NAME
 resources:
   cpu: 0.01
-  max_mem: 0.01
+  max_mem: 0.02
 shepherds:
 - ryan.burns@clever.com
 - xavi.ramirez@clever.com
