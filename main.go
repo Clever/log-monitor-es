@@ -91,6 +91,7 @@ func getLatestTimestamps(esClient *elastic.Client) (map[string]time.Time, error)
 
 func sendToSignalFX(timestamps map[string]time.Time) error {
 	points := []*datapoint.Datapoint{}
+	now := time.Now()
 	for host, timestamp := range timestamps {
 		dimensions := map[string]string{
 			"hostname":    host,
@@ -99,7 +100,8 @@ func sendToSignalFX(timestamps map[string]time.Time) error {
 		}
 
 		datum := sfxclient.Gauge(metricName, dimensions, timestamp.Unix())
-		points = append(points, datum)
+		datumLag := sfxclient.GaugeF(fmt.Sprintf("%s-lag", metricName), dimensions, float64(now.Sub(timestamp))/float64(time.Second))
+		points = append(points, datum, datumLag)
 	}
 
 	return sfxSink.AddDatapoints(context.TODO(), points)
