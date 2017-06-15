@@ -7,6 +7,9 @@ env:
 - SIGNALFX_API_KEY
 - METRIC_NAME
 - COMPONENT_NAME
+- HOSTNAME_FIELD
+- TIMESTAMP_FIELD
+- TITLE_FIELD
 resources:
   cpu: 0.01
   max_mem: 0.02

@@ -17,7 +17,7 @@ var kvlog *kv.Logger
 var sfxSink *sfxclient.HTTPDatapointSink
 
 // Config vars
-var componentName, elasticsearchIndex, elasticsearchURI, environment, signalfxAPIKey, metricName string
+var componentName, elasticsearchIndex, elasticsearchURI, environment, hostnameField, timestampField, titleField, signalfxAPIKey, metricName string
 
 // getEnv looks up an environment variable given and exits if it does not exist.
 func getEnv(envVar string) string {
@@ -35,6 +35,9 @@ func init() {
 	metricName = getEnv("METRIC_NAME")
 	componentName = getEnv("COMPONENT_NAME")
 	environment = getEnv("DEPLOY_ENV")
+	hostnameField = getEnv("HOSTNAME_FIELD")
+	timestampField = getEnv("TIMESTAMP_FIELD")
+	titleField = getEnv("TITLE_FIELD")
 
 	sfxSink = sfxclient.NewHTTPDatapointSink()
 	sfxSink.AuthToken = signalfxAPIKey
@@ -43,13 +46,13 @@ func init() {
 }
 
 func getLatestTimestamps(esClient *elastic.Client) (map[string]time.Time, error) {
-	hostname := elastic.NewTermsAggregation().Field("Hostname").Size(200)
-	timestamp := elastic.NewMaxAggregation().Field("Timestamp")
+	hostname := elastic.NewTermsAggregation().Field(hostnameField).Size(200)
+	timestamp := elastic.NewMaxAggregation().Field(timestampField)
 	hostname = hostname.SubAggregation("latestTimes", timestamp)
 
 	q := elastic.NewBoolQuery()
-	q = q.Must(elastic.NewTermQuery("Title", "heartbeat"))
-	q = q.Must(elastic.NewRangeQuery("Timestamp").Gte("now-5m/m").Lte("now/m"))
+	q = q.Must(elastic.NewTermQuery(titleField, "heartbeat"))
+	q = q.Must(elastic.NewRangeQuery(timestampField).Gte("now-5m/m").Lte("now/m"))
 
 	searchResult, err := esClient.Search().
 		Index(elasticsearchIndex).
