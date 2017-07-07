@@ -43,13 +43,13 @@ func init() {
 }
 
 func getLatestTimestamps(esClient *elastic.Client) (map[string]time.Time, error) {
-	hostname := elastic.NewTermsAggregation().Field("Hostname").Size(200)
-	timestamp := elastic.NewMaxAggregation().Field("Timestamp")
+	hostname := elastic.NewTermsAggregation().Field("hostname").Size(200)
+	timestamp := elastic.NewMaxAggregation().Field("timestamp")
 	hostname = hostname.SubAggregation("latestTimes", timestamp)
 
 	q := elastic.NewBoolQuery()
-	q = q.Must(elastic.NewTermQuery("Title", "heartbeat"))
-	q = q.Must(elastic.NewRangeQuery("Timestamp").Gte("now-5m/m").Lte("now/m"))
+	q = q.Must(elastic.NewTermQuery("title", "heartbeat"))
+	q = q.Must(elastic.NewRangeQuery("timestamp").Gte("now-5m/m").Lte("now/m"))
 
 	searchResult, err := esClient.Search().
 		Index(elasticsearchIndex).
@@ -88,6 +88,7 @@ func getLatestTimestamps(esClient *elastic.Client) (map[string]time.Time, error)
 
 func sendToSignalFX(timestamps map[string]time.Time) error {
 	points := []*datapoint.Datapoint{}
+	now := time.Now()
 	for host, timestamp := range timestamps {
 		dimensions := map[string]string{
 			"hostname":    host,
@@ -96,7 +97,8 @@ func sendToSignalFX(timestamps map[string]time.Time) error {
 		}
 
 		datum := sfxclient.Gauge(metricName, dimensions, timestamp.Unix())
-		points = append(points, datum)
+		datumLag := sfxclient.GaugeF(fmt.Sprintf("%s-lag", metricName), dimensions, float64(now.Sub(timestamp))/float64(time.Second))
+		points = append(points, datum, datumLag)
 	}
 
 	return sfxSink.AddDatapoints(context.TODO(), points)
