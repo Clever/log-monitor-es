@@ -7,6 +7,7 @@ env:
 - SIGNALFX_API_KEY
 - METRIC_NAME
 - COMPONENT_NAME
+- AWS_REGION
 resources:
   cpu: 0.0  # no CPU to improve resource usage (https://clever.atlassian.net/browse/INFRA-2120)
   max_mem: 0.02
