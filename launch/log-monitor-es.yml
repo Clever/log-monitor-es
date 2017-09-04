@@ -15,3 +15,4 @@ shepherds:
 - ryan.burns@clever.com
 - xavi.ramirez@clever.com
 team: eng-infra
+use_iam_roles: true
