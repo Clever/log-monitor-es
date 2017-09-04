@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -13,13 +14,12 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2/ec2iface"
 	"github.com/signalfx/golib/datapoint"
 	"github.com/signalfx/golib/sfxclient"
-	"golang.org/x/net/context"
-	kv "gopkg.in/Clever/kayvee-go.v3/logger"
-	"gopkg.in/olivere/elastic.v3"
+	kv "gopkg.in/Clever/kayvee-go.v6/logger"
+	elastic "gopkg.in/olivere/elastic.v5"
 )
 
-var kvlog *kv.Logger
-var sfxSink *sfxclient.HTTPDatapointSink
+var kvlog kv.KayveeLogger
+var sfxSink *sfxclient.HTTPSink
 
 // Config vars
 var componentName, elasticsearchIndex, elasticsearchURI, environment, signalfxAPIKey, metricName string
@@ -41,7 +41,7 @@ func init() {
 	componentName = getEnv("COMPONENT_NAME")
 	environment = getEnv("DEPLOY_ENV")
 
-	sfxSink = sfxclient.NewHTTPDatapointSink()
+	sfxSink = sfxclient.NewHTTPSink()
 	sfxSink.AuthToken = signalfxAPIKey
 
 	kvlog = kv.New("log-monitor-es")
@@ -63,7 +63,7 @@ func getLatestTimestamps(esClient *elastic.Client) (map[string]time.Time, error)
 		Aggregation("hosts", hostname).
 		Pretty(true).
 		Timeout("15s").
-		Do()
+		Do(context.TODO())
 
 	if err != nil {
 		return nil, fmt.Errorf("Error while searching: %s", err)
