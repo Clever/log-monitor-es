@@ -87,3 +87,5 @@ sftp-config.json
 Session.vim
 .netrwhist
 *~
+
+vendor/
