@@ -178,7 +178,7 @@ func main() {
 			continue
 		}
 
-		// remove data for instances that aren't running
+		// correct the data for instances that aren't running
 		for hostname := range timestamps {
 			if strings.HasPrefix(hostname, "ip-") {
 				// parse IP address out of ES hostnames of the form ip-10-0-0-1
@@ -187,7 +187,8 @@ func main() {
 				if err != nil {
 					kvlog.ErrorD("ec2-ip-check", kv.M{"error": err.Error()})
 				} else if !running {
-					delete(timestamps, hostname)
+					// set to now so that signalfx's last datapoint is ok
+					timestamps[hostname] = time.Now()
 				}
 			}
 		}
