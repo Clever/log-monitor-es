@@ -4,7 +4,7 @@ include golang.mk
 .PHONY: test build $(PKGS)
 SHELL := /bin/bash
 PKGS := $(shell go list ./... | grep -v /vendor)
-$(eval $(call golang-version-check,1.8))
+$(eval $(call golang-version-check,1.9))
 
 test: $(PKGS)
 $(PKGS): golang-test-all-deps
@@ -23,5 +23,7 @@ $(GOPATH)/src/github.com/Masterminds/glide:
 $(GOPATH)/bin/glide: $(GOPATH)/src/github.com/Masterminds/glide
 	go build -o $(GOPATH)/bin/glide github.com/Masterminds/glide
 
-install_deps: $(GOPATH)/bin/glide
-	$(GOPATH)/bin/glide install -v
+
+
+install_deps: golang-dep-vendor-deps
+	$(call golang-dep-vendor)
