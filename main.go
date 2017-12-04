@@ -54,7 +54,7 @@ func getLatestTimestamps(esClient *elastic.Client) (map[string]time.Time, error)
 
 	q := elastic.NewBoolQuery()
 	q = q.Must(elastic.NewTermQuery("title", "heartbeat"))
-	q = q.Must(elastic.NewRangeQuery("timestamp").Gte("now-5m/m").Lte("now/m"))
+	q = q.Must(elastic.NewRangeQuery("timestamp").Gte("now-1h").Lte("now"))
 
 	searchResult, err := esClient.Search().
 		Index(elasticsearchIndex).
@@ -170,8 +170,7 @@ func main() {
 	ec2api := ec2.New(sess)
 	ec2ip := &ec2IPChecker{ec2api: ec2api}
 
-	tick := time.Tick(15 * time.Second)
-	for {
+	for c := time.Tick(15 * time.Second); ; <-c {
 		timestamps, err := getLatestTimestamps(esClient)
 		if err != nil {
 			kvlog.ErrorD("timestamp", kv.M{"error": err.Error()})
@@ -204,7 +203,5 @@ func main() {
 			continue
 		}
 		kvlog.Info("sent-to-signalfx")
-
-		<-tick
 	}
 }
