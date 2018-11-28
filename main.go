@@ -48,7 +48,7 @@ func init() {
 }
 
 func getLatestTimestamps(esClient *elastic.Client) (map[string]time.Time, error) {
-	hostname := elastic.NewTermsAggregation().Field("hostname").Size(200)
+	hostname := elastic.NewTermsAggregation().Field("hostname").Size(500)
 	timestamp := elastic.NewMaxAggregation().Field("timestamp")
 	hostname = hostname.SubAggregation("latestTimes", timestamp)
 
