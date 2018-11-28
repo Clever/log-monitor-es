@@ -48,7 +48,7 @@ func init() {
 }
 
 func getLatestTimestamps(esClient *elastic.Client) (map[string]time.Time, error) {
-	hostname := elastic.NewTermsAggregation().Field("hostname").Size(200)
+	hostname := elastic.NewTermsAggregation().Field("hostname").Size(500)
 	timestamp := elastic.NewMaxAggregation().Field("timestamp")
 	hostname = hostname.SubAggregation("latestTimes", timestamp)
 
@@ -193,15 +193,13 @@ func main() {
 		}
 
 		// Log the number of hosts reported
-		kvlog.InfoD("timestamp", kv.M{
-			"count": len(timestamps),
-		})
+		kvlog.DebugD("timestamp", kv.M{"count": len(timestamps)})
 
 		err = sendToSignalFX(timestamps)
 		if err != nil {
 			kvlog.ErrorD("send-to-signalfx", kv.M{"error": err.Error()})
 			continue
 		}
-		kvlog.Info("sent-to-signalfx")
+		kvlog.Trace("sent-to-signalfx")
 	}
 }
