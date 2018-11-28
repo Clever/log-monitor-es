@@ -101,9 +101,10 @@
   revision = "e02fc20de94c78484cd5ffb007f8af96be030a45"
 
 [[projects]]
+  branch = "master"
   name = "github.com/xeipuuv/gojsonschema"
   packages = ["."]
-  revision = "0c8571ac0ce161a5feb57375a9cdf148c98c0f70"
+  revision = "ac52e6811b56ee2b7730a88915e956afe2cc0d69"
 
 [[projects]]
   name = "golang.org/x/net"
@@ -117,8 +118,8 @@
     "logger",
     "router"
   ]
-  revision = "e6f953eac5b9d8e41dff6587e0ae6d58b50da5c5"
-  version = "v6.7.3"
+  revision = "c8c3a96b8862f1b962ba9febf5afd2a1c3789fe0"
+  version = "v6.15.0"
 
 [[projects]]
   name = "gopkg.in/logfmt.v0"
@@ -151,6 +152,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "1cbbc13d1c72e32145081c0d7edc645ea8af85c5da2a296e2569b30473c53c15"
+  inputs-digest = "ae663b6a8a1aceed44d555940406686bd617f9e9b03dd1cc7224a871eac2d229"
   solver-name = "gps-cdcl"
   solver-version = 1
