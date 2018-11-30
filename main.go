@@ -103,7 +103,8 @@ func sendToSignalFX(timestamps map[string]time.Time) error {
 		}
 
 		datum := sfxclient.Gauge(metricName, dimensions, timestamp.Unix())
-		datumLag := sfxclient.GaugeF(fmt.Sprintf("%s-lag", metricName), dimensions, float64(now.Sub(timestamp))/float64(time.Second))
+		delta := now.Sub(timestamp).Seconds()
+		datumLag := sfxclient.GaugeF(fmt.Sprintf("%s-lag", metricName), dimensions, delta)
 		points = append(points, datum, datumLag)
 	}
 
