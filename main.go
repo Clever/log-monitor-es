@@ -50,7 +50,8 @@ func init() {
 func getLatestTimestamps(esClient *elastic.Client) (map[string]time.Time, error) {
 	hostname := elastic.NewTermsAggregation().Field("hostname").Size(500)
 	timestamp := elastic.NewMaxAggregation().Field("timestamp")
-	hostname = hostname.SubAggregation("latestTimes", timestamp)
+	// Increasing ShardSize should increase accuracy:
+	hostname = hostname.SubAggregation("latestTimes", timestamp).ShardSize(1500)
 
 	q := elastic.NewBoolQuery()
 	q = q.Must(elastic.NewTermQuery("title", "heartbeat"))
