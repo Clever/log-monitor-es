@@ -63,7 +63,7 @@ func getLatestTimestamps(esClient *elastic.Client) (map[string]time.Time, error)
 		SearchType("count").
 		Aggregation("hosts", hostname).
 		Pretty(true).
-		Timeout("15s").
+		Timeout("30s").
 		Do(context.TODO())
 
 	if err != nil {
@@ -171,7 +171,7 @@ func main() {
 	ec2api := ec2.New(sess)
 	ec2ip := &ec2IPChecker{ec2api: ec2api}
 
-	for c := time.Tick(15 * time.Second); ; <-c {
+	for c := time.Tick(30 * time.Second); ; <-c {
 		timestamps, err := getLatestTimestamps(esClient)
 		if err != nil {
 			kvlog.ErrorD("timestamp", kv.M{"error": err.Error()})
