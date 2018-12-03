@@ -2,9 +2,11 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"os"
+	"path"
 	"strings"
 	"time"
 
@@ -20,6 +22,16 @@ import (
 
 var kvlog kv.KayveeLogger
 var sfxSink *sfxclient.HTTPSink
+
+var errNoResultsFound = errors.New("No search results found")
+
+type FailedSearchError struct {
+	originalErr error
+}
+
+func (e FailedSearchError) Error() string {
+	return "error while searching: " + e.originalErr.Error()
+}
 
 // Config vars
 var componentName, elasticsearchIndex, elasticsearchURI, environment, signalfxAPIKey, metricName string
@@ -45,12 +57,23 @@ func init() {
 	sfxSink.AuthToken = signalfxAPIKey
 
 	kvlog = kv.New("log-monitor-es")
+
+	exePath, err := os.Executable()
+	if err != nil {
+		log.Fatal(err)
+	}
+	dir := path.Dir(exePath)
+	err = kv.SetGlobalRouting(path.Join(dir, "kvconfig.yml"))
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func getLatestTimestamps(esClient *elastic.Client) (map[string]time.Time, error) {
 	hostname := elastic.NewTermsAggregation().Field("hostname").Size(500)
 	timestamp := elastic.NewMaxAggregation().Field("timestamp")
-	hostname = hostname.SubAggregation("latestTimes", timestamp)
+	// Increasing ShardSize should increase accuracy:
+	hostname = hostname.SubAggregation("latestTimes", timestamp).ShardSize(1500)
 
 	q := elastic.NewBoolQuery()
 	q = q.Must(elastic.NewTermQuery("title", "heartbeat"))
@@ -62,16 +85,16 @@ func getLatestTimestamps(esClient *elastic.Client) (map[string]time.Time, error)
 		SearchType("count").
 		Aggregation("hosts", hostname).
 		Pretty(true).
-		Timeout("15s").
+		Timeout("30s").
 		Do(context.TODO())
 
 	if err != nil {
-		return nil, fmt.Errorf("Error while searching: %s", err)
+		return nil, FailedSearchError{err}
 	}
 
 	agg, found := searchResult.Aggregations.Terms("hosts")
 	if !found {
-		return nil, fmt.Errorf("No results found: %s", err)
+		return nil, errNoResultsFound
 	}
 
 	results := map[string]time.Time{}
@@ -102,7 +125,8 @@ func sendToSignalFX(timestamps map[string]time.Time) error {
 		}
 
 		datum := sfxclient.Gauge(metricName, dimensions, timestamp.Unix())
-		datumLag := sfxclient.GaugeF(fmt.Sprintf("%s-lag", metricName), dimensions, float64(now.Sub(timestamp))/float64(time.Second))
+		delta := now.Sub(timestamp).Seconds()
+		datumLag := sfxclient.GaugeF(fmt.Sprintf("%s-lag", metricName), dimensions, delta)
 		points = append(points, datum, datumLag)
 	}
 
@@ -170,9 +194,15 @@ func main() {
 	ec2api := ec2.New(sess)
 	ec2ip := &ec2IPChecker{ec2api: ec2api}
 
-	for c := time.Tick(15 * time.Second); ; <-c {
+	for c := time.Tick(30 * time.Second); ; <-c {
 		timestamps, err := getLatestTimestamps(esClient)
-		if err != nil {
+		if err == errNoResultsFound {
+			kvlog.WarnD("no-search-results", kv.M{"error": err.Error()})
+			continue
+		} else if ferr, ok := err.(FailedSearchError); ok {
+			kvlog.ErrorD("failed-search", kv.M{"error": ferr.Error()})
+			continue
+		} else if err != nil {
 			kvlog.ErrorD("timestamp", kv.M{"error": err.Error()})
 			continue
 		}
