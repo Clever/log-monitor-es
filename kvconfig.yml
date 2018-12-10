@@ -4,7 +4,7 @@ routes:
       title: [ "failed-search" ]
     output:
       type: "notifications"
-      channel: "#alerts-staging-infra"
+      channel: "#oncall-infra"
       icon: ":elasticsearch:"
       message: "Failed elastic search query.  Is kibana down?\n>%{error}"
       user: "log-monitor-es"
