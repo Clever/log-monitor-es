@@ -82,7 +82,7 @@ func getLatestTimestamps(esClient *elastic.Client) (map[string]time.Time, error)
 	searchResult, err := esClient.Search().
 		Index(elasticsearchIndex).
 		Query(q).
-		SearchType("count").
+		Size(0).
 		Aggregation("hosts", hostname).
 		Pretty(true).
 		Timeout("30s").
