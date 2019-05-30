@@ -2,6 +2,7 @@
 
 
 [[projects]]
+  digest = "1:f8bf2fcf62410b565b9caacb6a7a858302c22968f5738549c09a17dbe6ae306a"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -13,68 +14,90 @@
     "aws/credentials",
     "aws/credentials/ec2rolecreds",
     "aws/credentials/endpointcreds",
+    "aws/credentials/processcreds",
     "aws/credentials/stscreds",
+    "aws/csm",
     "aws/defaults",
     "aws/ec2metadata",
     "aws/endpoints",
     "aws/request",
     "aws/session",
     "aws/signer/v4",
+    "internal/ini",
+    "internal/sdkio",
     "internal/sdkrand",
+    "internal/sdkuri",
     "internal/shareddefaults",
     "private/protocol",
     "private/protocol/ec2query",
+    "private/protocol/json/jsonutil",
     "private/protocol/query",
     "private/protocol/query/queryutil",
     "private/protocol/rest",
     "private/protocol/xml/xmlutil",
     "service/ec2",
     "service/ec2/ec2iface",
-    "service/sts"
+    "service/sts",
   ]
-  revision = "63324a33d7e42a386c04d4daec764a3de243492e"
-  version = "v1.13.0"
+  pruneopts = ""
+  revision = "5312c8dac9067d339c4e68d7e0dd5507b2f01849"
+  version = "v1.19.41"
 
 [[projects]]
+  digest = "1:a00483fe4106b86fb1187a92b5cf6915c85f294ed4c129ccbe7cb1f1a06abd46"
   name = "github.com/go-ini/ini"
   packages = ["."]
+  pruneopts = ""
   revision = "32e4c1e6bc4e7d0d8451aa6b75200d19e37a536a"
   version = "v1.32.0"
 
 [[projects]]
+  digest = "1:5baa2c02dc99e7e19da7e5f78f5df65649f0c45ffc2bfd695faa712a4d6ac779"
   name = "github.com/golang/protobuf"
   packages = ["proto"]
+  pruneopts = ""
   revision = "17ce1425424ab154092bbb43af630bd647f3bb0d"
 
 [[projects]]
+  digest = "1:13fe471d0ed891e8544eddfeeb0471fd3c9f2015609a1c000aefdedf52a19d40"
   name = "github.com/jmespath/go-jmespath"
   packages = ["."]
-  revision = "0b12d6b5"
+  pruneopts = ""
+  revision = "c2b33e84"
 
 [[projects]]
   branch = "master"
+  digest = "1:1ed9eeebdf24aadfbca57eb50e6455bd1d2474525e0f0d4454de8c8e9bc7ee9a"
   name = "github.com/kr/logfmt"
   packages = ["."]
+  pruneopts = ""
   revision = "b84e30acd515aadc4b783ad4ff83aff3299bdfe0"
 
 [[projects]]
+  digest = "1:3feb34391c5d3f22c7aea09e6c04caae198a9cd196d33e2af11e371296523e7e"
   name = "github.com/pkg/errors"
   packages = ["."]
+  pruneopts = ""
   revision = "c605e284fe17294bda444b34710735b29d1a9d90"
 
 [[projects]]
   branch = "master"
+  digest = "1:ec0b4406ee4d860a33d6cf6748ec4c4546f6890e7c90d8fcf541e1ac7d9add91"
   name = "github.com/signalfx/com_signalfx_metrics_protobuf"
   packages = ["."]
+  pruneopts = ""
   revision = "93e507b42f43f458a109ca278d1542a26a0b87fc"
 
 [[projects]]
   branch = "master"
+  digest = "1:970b1463f5a08bf6790ad497c47ffe87ca75d37f0dd76bd7cd24b1318900a93e"
   name = "github.com/signalfx/gohistogram"
   packages = ["."]
+  pruneopts = ""
   revision = "1ccfd2ff508314074672f4450a917011a2060408"
 
 [[projects]]
+  digest = "1:9904562037eaa19ee91d98268de14f8c4a631827c2719708051d7024891e2043"
   name = "github.com/signalfx/golib"
   packages = [
     "datapoint",
@@ -83,75 +106,147 @@
     "eventcounter",
     "log",
     "sfxclient",
-    "timekeeper"
+    "timekeeper",
   ]
+  pruneopts = ""
   revision = "cb7680940d605b817db79790c241eed2a00fa6e6"
   version = "v1.0.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:dd275b17b08ad316ab1e69396a09085b65b0a728869bd406d0515f2f08ad4571"
   name = "github.com/xeipuuv/gojsonpointer"
   packages = ["."]
+  pruneopts = ""
   revision = "6fe8760cad3569743d51ddbb243b26f8456742dc"
 
 [[projects]]
   branch = "master"
+  digest = "1:feb667646650e600036a4731f959e746eb755970fc2c8a3d54c66a0cde7ac69d"
   name = "github.com/xeipuuv/gojsonreference"
   packages = ["."]
+  pruneopts = ""
   revision = "e02fc20de94c78484cd5ffb007f8af96be030a45"
 
 [[projects]]
   branch = "master"
+  digest = "1:986d556f2ac37056d1a6faaeb2e7428a75e3e3dc0e2c7f5a8bb2200e3925dca0"
   name = "github.com/xeipuuv/gojsonschema"
   packages = ["."]
+  pruneopts = ""
   revision = "ac52e6811b56ee2b7730a88915e956afe2cc0d69"
 
 [[projects]]
+  digest = "1:ac3ee562ea184c7b47276d00d7bec2a0ac19fd87451125d57a432a934e65a6e4"
   name = "golang.org/x/net"
   packages = ["context"]
+  pruneopts = ""
   revision = "66aacef3dd8a676686c7ae3716979581e8b03c47"
 
 [[projects]]
+  digest = "1:45cc4537bc92ad1f7d7838e20d9b8b102e246fa3a1bebeebee3f9fa006d4cc62"
   name = "gopkg.in/Clever/kayvee-go.v6"
   packages = [
     ".",
     "logger",
-    "router"
+    "router",
   ]
+  pruneopts = ""
   revision = "c8c3a96b8862f1b962ba9febf5afd2a1c3789fe0"
   version = "v6.15.0"
 
 [[projects]]
+  digest = "1:6a4a01d58b227c4b6b11111b9f172ec5c17682b82724e58e6daf3f19f4faccd8"
   name = "gopkg.in/logfmt.v0"
   packages = ["."]
+  pruneopts = ""
   revision = "390ab7935ee28ec6b286364bba9b4dd6410cb3d5"
   version = "v0.3.0"
 
 [[projects]]
+  digest = "1:3600c77e27981e9641db85efd0b78065e82e83b6ea1678576a6b401383024785"
   name = "gopkg.in/olivere/elastic.v5"
   packages = [
     ".",
     "config",
-    "uritemplates"
+    "uritemplates",
   ]
+  pruneopts = ""
   revision = "edbef41beaacc2ee95e61af8faff04e67c01e268"
   version = "v5.0.45"
 
 [[projects]]
+  digest = "1:996761b4652a3dec771aa335202ed1f257206f94d05519b6babffdeaf87dc7e6"
   name = "gopkg.in/stack.v1"
   packages = ["."]
+  pruneopts = ""
   revision = "817915b46b97fd7bb80e8ab6b69f01a53ac3eebf"
   version = "v1.6.0"
 
 [[projects]]
   branch = "v2"
+  digest = "1:81314a486195626940617e43740b4fa073f265b0715c9f54ce2027fee1cb5f61"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
+  pruneopts = ""
   revision = "eb3733d160e74a9c7e442f435eb3bea458e1d19f"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ae663b6a8a1aceed44d555940406686bd617f9e9b03dd1cc7224a871eac2d229"
+  input-imports = [
+    "github.com/aws/aws-sdk-go/aws",
+    "github.com/aws/aws-sdk-go/aws/awserr",
+    "github.com/aws/aws-sdk-go/aws/awsutil",
+    "github.com/aws/aws-sdk-go/aws/client",
+    "github.com/aws/aws-sdk-go/aws/client/metadata",
+    "github.com/aws/aws-sdk-go/aws/corehandlers",
+    "github.com/aws/aws-sdk-go/aws/credentials",
+    "github.com/aws/aws-sdk-go/aws/credentials/ec2rolecreds",
+    "github.com/aws/aws-sdk-go/aws/credentials/endpointcreds",
+    "github.com/aws/aws-sdk-go/aws/credentials/stscreds",
+    "github.com/aws/aws-sdk-go/aws/defaults",
+    "github.com/aws/aws-sdk-go/aws/ec2metadata",
+    "github.com/aws/aws-sdk-go/aws/endpoints",
+    "github.com/aws/aws-sdk-go/aws/request",
+    "github.com/aws/aws-sdk-go/aws/session",
+    "github.com/aws/aws-sdk-go/aws/signer/v4",
+    "github.com/aws/aws-sdk-go/private/protocol",
+    "github.com/aws/aws-sdk-go/private/protocol/ec2query",
+    "github.com/aws/aws-sdk-go/private/protocol/query",
+    "github.com/aws/aws-sdk-go/private/protocol/query/queryutil",
+    "github.com/aws/aws-sdk-go/private/protocol/rest",
+    "github.com/aws/aws-sdk-go/private/protocol/xml/xmlutil",
+    "github.com/aws/aws-sdk-go/service/ec2",
+    "github.com/aws/aws-sdk-go/service/ec2/ec2iface",
+    "github.com/aws/aws-sdk-go/service/sts",
+    "github.com/go-ini/ini",
+    "github.com/golang/protobuf/proto",
+    "github.com/jmespath/go-jmespath",
+    "github.com/kr/logfmt",
+    "github.com/pkg/errors",
+    "github.com/signalfx/com_signalfx_metrics_protobuf",
+    "github.com/signalfx/gohistogram",
+    "github.com/signalfx/golib/datapoint",
+    "github.com/signalfx/golib/errors",
+    "github.com/signalfx/golib/event",
+    "github.com/signalfx/golib/eventcounter",
+    "github.com/signalfx/golib/log",
+    "github.com/signalfx/golib/sfxclient",
+    "github.com/signalfx/golib/timekeeper",
+    "github.com/xeipuuv/gojsonpointer",
+    "github.com/xeipuuv/gojsonreference",
+    "github.com/xeipuuv/gojsonschema",
+    "golang.org/x/net/context",
+    "gopkg.in/Clever/kayvee-go.v6",
+    "gopkg.in/Clever/kayvee-go.v6/logger",
+    "gopkg.in/Clever/kayvee-go.v6/router",
+    "gopkg.in/logfmt.v0",
+    "gopkg.in/olivere/elastic.v5",
+    "gopkg.in/olivere/elastic.v5/config",
+    "gopkg.in/olivere/elastic.v5/uritemplates",
+    "gopkg.in/stack.v1",
+    "gopkg.in/yaml.v2",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1
