@@ -179,7 +179,7 @@
   version = "v0.3.0"
 
 [[projects]]
-  digest = "1:3600c77e27981e9641db85efd0b78065e82e83b6ea1678576a6b401383024785"
+  digest = "1:c50e9dfae46bee4dd51aa76ba71e8893a9c6dac3b3710be35401a6b6342ea7c2"
   name = "gopkg.in/olivere/elastic.v5"
   packages = [
     ".",
@@ -187,8 +187,8 @@
     "uritemplates",
   ]
   pruneopts = ""
-  revision = "edbef41beaacc2ee95e61af8faff04e67c01e268"
-  version = "v5.0.45"
+  revision = "1b8e36857caf4b1e6113699ffb38d0981fc7bdae"
+  version = "v5.0.81"
 
 [[projects]]
   digest = "1:996761b4652a3dec771aa335202ed1f257206f94d05519b6babffdeaf87dc7e6"
