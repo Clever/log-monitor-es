@@ -2,7 +2,7 @@
 
 
 [[projects]]
-  digest = "1:104e008fa76f22594953b2ecd73f267d789184d2259ee387edd2caa7554a8bf0"
+  digest = "1:5e012a659a0aadef0faf6f9450ddb3a57593fedd0cfafa48fcc4bede9f6419e8"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -25,6 +25,7 @@
     "aws/signer/v4",
     "internal/ini",
     "internal/sdkio",
+    "internal/sdkmath",
     "internal/sdkrand",
     "internal/sdkuri",
     "internal/shareddefaults",
@@ -41,8 +42,8 @@
     "service/sts/stsiface",
   ]
   pruneopts = ""
-  revision = "d38ae59ad646630fb9ee134c9d9a4c0601e20483"
-  version = "v1.22.1"
+  revision = "9f7c1395291513f12aa6efeb7be34e273a26a5d1"
+  version = "v1.23.12"
 
 [[projects]]
   digest = "1:a00483fe4106b86fb1187a92b5cf6915c85f294ed4c129ccbe7cb1f1a06abd46"
