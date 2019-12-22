@@ -1,10 +1,1 @@
-routes:
-  search-error:
-    matchers:
-      title: [ "failed-search" ]
-    output:
-      type: "notifications"
-      channel: "#oncall-infra"
-      icon: ":elasticsearch:"
-      message: "Failed elastic search query.  Is kibana down?\n>%{error}"
-      user: "log-monitor-es"
+routes: {}
