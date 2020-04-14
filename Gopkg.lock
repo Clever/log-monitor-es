@@ -32,18 +32,29 @@
     "private/protocol",
     "private/protocol/ec2query",
     "private/protocol/json/jsonutil",
+    "private/protocol/jsonrpc",
     "private/protocol/query",
     "private/protocol/query/queryutil",
     "private/protocol/rest",
     "private/protocol/xml/xmlutil",
     "service/ec2",
     "service/ec2/ec2iface",
+    "service/firehose",
+    "service/firehose/firehoseiface",
     "service/sts",
     "service/sts/stsiface",
   ]
   pruneopts = ""
   revision = "d57c8d96f72d9475194ccf18d2ba70ac294b0cb3"
   version = "v1.23.13"
+
+[[projects]]
+  digest = "1:8c9af6e3162383951dee97404fadb761f9ae60b4806998df288a5b143afa7251"
+  name = "github.com/eapache/go-resiliency"
+  packages = ["retrier"]
+  pruneopts = ""
+  revision = "5efd2ed019fd331ec2defc6f3bd98882f1e3e636"
+  version = "v1.2.0"
 
 [[projects]]
   digest = "1:a00483fe4106b86fb1187a92b5cf6915c85f294ed4c129ccbe7cb1f1a06abd46"
@@ -161,7 +172,7 @@
   revision = "66aacef3dd8a676686c7ae3716979581e8b03c47"
 
 [[projects]]
-  digest = "1:ebe5a08de85b249031c22bdf7ea4120be2b8e4751cb647ef8aa829774aa87225"
+  digest = "1:0d5cfbb57e8ff8640a5a54082ee555270378a28db24f24a24af530384a9822bc"
   name = "gopkg.in/Clever/kayvee-go.v6"
   packages = [
     ".",
@@ -169,8 +180,8 @@
     "router",
   ]
   pruneopts = ""
-  revision = "1e2557bcbd6982e6303c364505d1c129ede8f2ee"
-  version = "v6.17.0"
+  revision = "e704be3e70f85875fc9a56cdfac2acabb5a3eb92"
+  version = "v6.22.0"
 
 [[projects]]
   digest = "1:6a4a01d58b227c4b6b11111b9f172ec5c17682b82724e58e6daf3f19f4faccd8"
