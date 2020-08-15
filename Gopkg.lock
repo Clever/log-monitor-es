@@ -46,14 +46,6 @@
   version = "v1.23.13"
 
 [[projects]]
-  digest = "1:a00483fe4106b86fb1187a92b5cf6915c85f294ed4c129ccbe7cb1f1a06abd46"
-  name = "github.com/go-ini/ini"
-  packages = ["."]
-  pruneopts = ""
-  revision = "32e4c1e6bc4e7d0d8451aa6b75200d19e37a536a"
-  version = "v1.32.0"
-
-[[projects]]
   digest = "1:5baa2c02dc99e7e19da7e5f78f5df65649f0c45ffc2bfd695faa712a4d6ac779"
   name = "github.com/golang/protobuf"
   packages = ["proto"]
@@ -154,14 +146,7 @@
   revision = "ac52e6811b56ee2b7730a88915e956afe2cc0d69"
 
 [[projects]]
-  digest = "1:ac3ee562ea184c7b47276d00d7bec2a0ac19fd87451125d57a432a934e65a6e4"
-  name = "golang.org/x/net"
-  packages = ["context"]
-  pruneopts = ""
-  revision = "66aacef3dd8a676686c7ae3716979581e8b03c47"
-
-[[projects]]
-  digest = "1:ebe5a08de85b249031c22bdf7ea4120be2b8e4751cb647ef8aa829774aa87225"
+  digest = "1:0923ed679d96b9e53b8c43892e2094ebb5dccd0a66709b20c90f43c37ff71ff1"
   name = "gopkg.in/Clever/kayvee-go.v6"
   packages = [
     ".",
@@ -169,8 +154,8 @@
     "router",
   ]
   pruneopts = ""
-  revision = "1e2557bcbd6982e6303c364505d1c129ede8f2ee"
-  version = "v6.17.0"
+  revision = "1c544ce9daf62e3673f4f1ba0bffde53cd13f502"
+  version = "v6.24.0"
 
 [[projects]]
   digest = "1:6a4a01d58b227c4b6b11111b9f172ec5c17682b82724e58e6daf3f19f4faccd8"
@@ -213,57 +198,13 @@
   analyzer-version = 1
   input-imports = [
     "github.com/aws/aws-sdk-go/aws",
-    "github.com/aws/aws-sdk-go/aws/awserr",
-    "github.com/aws/aws-sdk-go/aws/awsutil",
-    "github.com/aws/aws-sdk-go/aws/client",
-    "github.com/aws/aws-sdk-go/aws/client/metadata",
-    "github.com/aws/aws-sdk-go/aws/corehandlers",
-    "github.com/aws/aws-sdk-go/aws/credentials",
-    "github.com/aws/aws-sdk-go/aws/credentials/ec2rolecreds",
-    "github.com/aws/aws-sdk-go/aws/credentials/endpointcreds",
-    "github.com/aws/aws-sdk-go/aws/credentials/stscreds",
-    "github.com/aws/aws-sdk-go/aws/defaults",
-    "github.com/aws/aws-sdk-go/aws/ec2metadata",
-    "github.com/aws/aws-sdk-go/aws/endpoints",
-    "github.com/aws/aws-sdk-go/aws/request",
     "github.com/aws/aws-sdk-go/aws/session",
-    "github.com/aws/aws-sdk-go/aws/signer/v4",
-    "github.com/aws/aws-sdk-go/private/protocol",
-    "github.com/aws/aws-sdk-go/private/protocol/ec2query",
-    "github.com/aws/aws-sdk-go/private/protocol/query",
-    "github.com/aws/aws-sdk-go/private/protocol/query/queryutil",
-    "github.com/aws/aws-sdk-go/private/protocol/rest",
-    "github.com/aws/aws-sdk-go/private/protocol/xml/xmlutil",
     "github.com/aws/aws-sdk-go/service/ec2",
     "github.com/aws/aws-sdk-go/service/ec2/ec2iface",
-    "github.com/aws/aws-sdk-go/service/sts",
-    "github.com/go-ini/ini",
-    "github.com/golang/protobuf/proto",
-    "github.com/jmespath/go-jmespath",
-    "github.com/kr/logfmt",
-    "github.com/pkg/errors",
-    "github.com/signalfx/com_signalfx_metrics_protobuf",
-    "github.com/signalfx/gohistogram",
     "github.com/signalfx/golib/datapoint",
-    "github.com/signalfx/golib/errors",
-    "github.com/signalfx/golib/event",
-    "github.com/signalfx/golib/eventcounter",
-    "github.com/signalfx/golib/log",
     "github.com/signalfx/golib/sfxclient",
-    "github.com/signalfx/golib/timekeeper",
-    "github.com/xeipuuv/gojsonpointer",
-    "github.com/xeipuuv/gojsonreference",
-    "github.com/xeipuuv/gojsonschema",
-    "golang.org/x/net/context",
-    "gopkg.in/Clever/kayvee-go.v6",
     "gopkg.in/Clever/kayvee-go.v6/logger",
-    "gopkg.in/Clever/kayvee-go.v6/router",
-    "gopkg.in/logfmt.v0",
     "gopkg.in/olivere/elastic.v5",
-    "gopkg.in/olivere/elastic.v5/config",
-    "gopkg.in/olivere/elastic.v5/uritemplates",
-    "gopkg.in/stack.v1",
-    "gopkg.in/yaml.v2",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
